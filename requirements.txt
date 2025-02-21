@@ -8,3 +8,4 @@ langchain_core
 undetected-chromedriver
 gunicorn
 geckodriver-autoinstaller
+fpdf
