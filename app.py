@@ -29,7 +29,7 @@ app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
 # Configurations
-data_file = "users.json"
+data_file = "./utils/users.json"
 upload_folder = "upload_files"
 app.config['UPLOAD_FOLDER'] = upload_folder
 app.permanent_session_lifetime = timedelta(minutes=30)
