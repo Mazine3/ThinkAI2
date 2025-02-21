@@ -1,0 +1,179 @@
+/* style.css */
+
+/* -----------------------------
+   Global Body / Colors 
+------------------------------*/
+body {
+  background-color: #111; /* Dark background for a modern vibe */
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+}
+
+/* -----------------------------
+   Navbar Styles 
+------------------------------*/
+.custom-navbar {
+  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+  /* You can choose another gradient or color set:
+     For instance, #8e2de2 → #4a00e0 is a popular pink/purple combo */
+}
+
+.nav-link {
+  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+  color: #ff8dfd !important; /* A bright pinkish color */
+  transform: scale(1.1); /* Subtle grow on hover */
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* -----------------------------
+   Hero Section 
+------------------------------*/
+.hero-section {
+  /* Fullscreen-ish height */
+  height: 80vh;
+  background: 
+    /* optional overlay gradient on top of the background image */
+    linear-gradient(
+      rgba(16, 16, 16, 0.7), 
+      rgba(16, 16, 16, 0.7)
+    ),
+    url("{{ url_for('static', filename='thinkAI_bg.jpg') }}");
+  /* replace with your own background image if you like */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.hero-logo {
+  max-width: 200px;
+  animation: floatLogo 3s ease-in-out infinite alternate;
+}
+
+@keyframes floatLogo {
+  0%   { transform: translateY(0px); }
+  100% { transform: translateY(-15px); }
+}
+
+.hero-description {
+  max-width: 600px;
+  margin-top: 1rem;
+}
+
+.hero-btn {
+  color: #4a00e0 !important;
+  background-color: #fff !important;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  transition: transform 0.3s;
+}
+
+.hero-btn:hover {
+  transform: scale(1.1) translateY(-3px);
+}
+
+/* -----------------------------
+   Features Section 
+------------------------------*/
+.feature-card {
+  background-color: #1b1b1b;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  min-height: 220px;
+}
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+.feature-icon {
+  font-size: 3rem;
+  display: inline-block;
+}
+
+/* Example override for the container around alerts */
+.container.my-3 {
+  margin-top: 20px !important;
+}
+
+/* style.css */
+
+/* Make sure the body takes up full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Full-page background image */
+body {
+  /* Fallback in case image doesn’t load */
+  background-color: #111;
+
+  /* The actual image:
+     Use url_for in your template (shown below).
+     Setting background-size: cover so it always covers the viewport,
+     background-attachment: fixed for a parallax-like effect. 
+  */
+  background: 
+    /* optional overlay if you want a dark/transparent layer on top of your image:
+       linear-gradient(rgba(16,16,16,0.5), rgba(16,16,16,0.5)), 
+    */
+    url("{{ url_for('static', filename='background.png') }}") 
+    no-repeat center center fixed;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Optionally, you can keep your custom font & color for text: */
+body, .navbar, .card, .container, .row, .col-md-4, .feature-card {
+  color: #fff; 
+  /* or whichever color you prefer for text */
+}
+
+/* TIP: If you already have a hero section with a background,
+   you might remove that background so it doesn’t clash, 
+   or let it blend. Decide which approach you prefer.
+*/
+
+/* style.css */
+.login-card {
+  background-color: rgba(0, 0, 0, 0.6); /* Black at 60% opacity */
+  border-radius: 8px;
+  padding: 2rem;
+  color: #fff;
+
+  /* For partial 'frosted glass' effect, you can also add: */
+  backdrop-filter: blur(6px);
+
+  /* Layout constraints */
+  max-width: 400px;
+  width: 100%;
+}
+
+
+.card {
+  background-color: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(4px);
+}
+
+
+.btn:active {
+  transform: scale(1.1);
+  transition: transform 0.1s ease-in-out;
+}
+
+.btn-clicked {
+  transform: scale(1.2);
+  transition: transform 0.1s ease-in-out;
+}
