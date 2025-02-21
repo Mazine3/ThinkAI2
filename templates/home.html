@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Home | ThinkAI{% endblock %}
+
+{% block content %}
+<!-- HERO / INTRO SECTION -->
+<section class="container text-center py-5" style="min-height: 70vh;">
+  <img
+    src="{{ url_for('static', filename='logo.png') }}"
+    alt="ThinkAI Logo"
+    style="max-width: 180px;"
+    class="mb-4"
+  />
+  <h1 class="mb-3">Welcome to ThinkAI</h1>
+  <p class="lead mx-auto" style="max-width: 700px;">
+    Revolutionize your job applications with AI-driven insights, 
+    automated processes, and powerful analytics. 
+    Experience the future of job applications with ThinkAI.
+  </p>
+  <a href="{{ url_for('features') }}" class="btn btn-lg btn-light mt-3" id="get-started">
+    Get Started
+  </a>
+</section>
+
+<!-- OPTIONAL features / INFO SECTION -->
+<section class="container py-5">
+  <h2 class="text-center mb-4">Why ThinkAI?</h2>
+  <div class="row g-4">
+    <!-- Feature 1 -->
+    <div class="col-md-4">
+      <div class="p-4 bg-dark bg-opacity-50 rounded text-center">
+        <h5 class="mb-3">AI-Powered Matching</h5>
+        <p>
+          We use cutting-edge AI algorithms to match your CV 
+          with the best job opportunities.
+        </p>
+      </div>
+    </div>
+    <!-- Feature 2 -->
+    <div class="col-md-4">
+      <div class="p-4 bg-dark bg-opacity-50 rounded text-center">
+        <h5 class="mb-3">Automated Applications</h5>
+        <p>
+          Save time by automating the process, 
+          letting you apply to multiple jobs with just one click.
+        </p>
+      </div>
+    </div>
+    <!-- Feature 3 -->
+    <div class="col-md-4">
+      <div class="p-4 bg-dark bg-opacity-50 rounded text-center">
+        <h5 class="mb-3">Secure & Reliable</h5>
+        <p>
+          Your data is fully protected with advanced encryption 
+          and secure login sessions for utmost privacy.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.getElementById("get-started").addEventListener("click", function(event) {
+      event.preventDefault(); // Prevent immediate navigation
+
+      this.style.transition = "transform 0.3s ease-in-out";
+      this.style.transform = "scale(1.2)";
+
+      setTimeout(() => {
+          window.location.href = this.href; // Redirect after animation
+      }, 500); // Delay to match animation duration
+  });
+</script>
+
+{% endblock %}

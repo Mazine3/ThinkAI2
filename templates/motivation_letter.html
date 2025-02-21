@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}Motivation Letter | ThinkAI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  
+  <!-- Form Container (Hidden When PDF is Generated) -->
+  <div id="formContainer">
+    <h2 class="mb-4 text-center">Create Your Motivation Letter</h2>
+
+    <div class="card shadow">
+      <div class="card-body">
+        <form id="letterForm" method="POST">
+          <!-- Row 1 -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="jobTitle" class="form-label">Job Title</label>
+              <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="e.g. Software Engineer" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="yourName" class="form-label">Your Name</label>
+              <input type="text" class="form-control" id="yourName" name="yourName" placeholder="e.g. John Doe" required>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="applyingCompany" class="form-label">Applying Company Name</label>
+              <input type="text" class="form-control" id="applyingCompany" name="applyingCompany" placeholder="e.g. Google" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="writeTo" class="form-label">Write the Letter To</label>
+              <input type="text" class="form-control" id="writeTo" name="writeTo" placeholder="Hiring Manager, HR..." required>
+            </div>
+          </div>
+
+          <!-- Row 3 (Optional Fields) -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="skills" class="form-label">Skills (Optional)</label>
+              <input type="text" class="form-control" id="skills" name="skills" placeholder="e.g. Python, Leadership">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="roleType" class="form-label">Role Type (Optional)</label>
+              <select class="form-select" id="roleType" name="roleType">
+                <option disabled selected value="">-- Select a role type --</option>
+                <option value="internship">Internship</option>
+                <option value="fulltime">Full-time</option>
+                <option value="parttime">Part-time</option>
+                <option value="remote">Remote</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 4 (Optional Fields) -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="jobLocation" class="form-label">Job Location (Optional)</label>
+              <select class="form-select" id="jobLocation" name="jobLocation">
+                <option disabled selected value="">-- Select job location --</option>
+                <option value="tunis">Tunis</option>
+                <option value="sousse">Sousse</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="langue_lettre" class="form-label">Letter Language (Optional)</label>
+              <select class="form-select" id="langue_lettre" name="langue_lettre">
+                <option disabled selected value="">-- Select language --</option>
+                <option value="english">English</option>
+                <option value="frensh">French</option>
+                <option value="arabic">Arabic</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary w-100">Generate Letter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF Display Section (Initially Hidden) -->
+  <div class="mt-4 d-none" id="pdfViewerContainer">
+    <h4 class="text-center">Generated Motivation Letter</h4>
+    <div class="text-center">
+      <iframe id="pdfViewer" style="width:100%; height:400px; border:1px solid #ccc;"></iframe>
+    </div>
+    <div class="text-center mt-2">
+      <!-- Download button for the PDF -->
+      <a id="downloadPdf" class="btn btn-success" download="motivation_letter.pdf">Download PDF</a>
+      <!-- Modify button to show the text area -->
+      <button id="modifyBtn" class="btn btn-warning">Modify</button>
+    </div>
+  </div>
+
+  <!-- Editing Section (Initially Hidden) -->
+  <div class="mt-4 d-none" id="editContainer">
+    <h4 class="text-center">Edit Letter Text</h4>
+    <div class="mb-3">
+      <label for="editTextArea" class="form-label">Letter Content</label>
+      <textarea id="editTextArea" class="form-control" rows="10"></textarea>
+    </div>
+    <div class="text-center">
+      <button id="applyChangesBtn" class="btn btn-primary">Apply Changes</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // 1. Generate the letter (first POST)
+  document.getElementById("letterForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+
+    fetch("/motivation_letter", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.pdf_data) {
+        const pdfDataUri = "data:application/pdf;base64," + data.pdf_data;
+
+        // Hide the form
+        document.getElementById("formContainer").classList.add("d-none");
+
+        // Show the PDF viewer
+        document.getElementById("pdfViewer").src = pdfDataUri;
+        document.getElementById("downloadPdf").href = pdfDataUri;
+        document.getElementById("pdfViewerContainer").classList.remove("d-none");
+
+        // Store the text in the textarea (for editing later)
+        document.getElementById("editTextArea").value = data.letter_text;
+      }
+    })
+    .catch(error => console.error("Error:", error));
+  });
+
+  // 2. Show the editing container
+  document.getElementById("modifyBtn").addEventListener("click", function() {
+    const editContainer = document.getElementById("editContainer");
+    editContainer.classList.remove("d-none"); // show the editing section
+  });
+
+  // 3. Apply changes (second POST)
+  document.getElementById("applyChangesBtn").addEventListener("click", function() {
+    const editedText = document.getElementById("editTextArea").value;
+
+    const formData = new FormData();
+    formData.append("edited_text", editedText);
+
+    fetch("/update_motivation_letter", {
+      method: "POST",
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.pdf_data) {
+        const pdfDataUri = "data:application/pdf;base64," + data.pdf_data;
+        // Update the iframe
+        document.getElementById("pdfViewer").src = pdfDataUri;
+        // Update the download link
+        document.getElementById("downloadPdf").href = pdfDataUri;
+      }
+    })
+    .catch(error => console.error("Error:", error));
+  });
+</script>
+{% endblock %}

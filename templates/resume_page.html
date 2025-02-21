@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Create Resume | ThinkAI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4 text-center">Create Resume</h2>
+  <p class="text-center mb-5">
+    Select what you want to create:
+  </p>
+  
+  <div class="row g-4 justify-content-center">
+    <!-- Option 1: Build Resume -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark h-100 shadow">
+        <img 
+          src="{{ url_for('static', filename='images/cv_maker.png') }}" 
+          class="card-img-top" 
+          alt="Build Resume" 
+        >
+        <div class="card-body">
+          <h5 class="card-title">Build Resume</h5>
+          <p class="card-text">
+            Fill out our wizard to generate a polished professional CV.
+          </p>
+        </div>
+        <div class="card-footer">
+          <a href="#" class="btn btn-primary w-100 disabled">
+            Coming Soon
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Option 2: Create Letter of Motivation -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark h-100 shadow">
+        <img 
+          src="{{ url_for('static', filename='images/letter.jpg') }}" 
+          class="card-img-top" 
+          alt="Create Motivation Letter" 
+        >
+        <div class="card-body">
+          <h5 class="card-title">Create Letter of Motivation</h5>
+          <p class="card-text">
+            Craft a professional motivation letter 
+            tailored for your job application.
+          </p>
+        </div>
+        <div class="card-footer">
+          <!-- This link goes to a new route 'motivation_letter_page' that renders the letter form -->
+          <a href="{{ url_for('motivation_letter') }}" class="btn btn-primary w-100">
+            Create
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

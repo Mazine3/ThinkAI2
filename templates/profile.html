@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Profile | ThinkAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+  <div class="row">
+    <!-- LEFT SIDEBAR -->
+    <div class="col-md-3 col-lg-2 bg-white shadow-sm" style="min-height: 80vh;">
+
+      <!-- Profile Avatar & Info -->
+      <div class="text-center py-4 border-bottom">
+        <!-- Circle avatar with initials or an actual image -->
+        <div 
+          class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle bg-secondary text-white" 
+          style="width: 80px; height: 80px; font-size: 1.5rem;"
+        >
+          {{ user.initials }}
+        </div>
+        <h5 class="mb-0">{{ user.full_name }}</h5>
+        <small class="text-muted">{{ user.email }}</small>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <ul class="nav flex-column mt-3">
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="{{ url_for('home') }}">
+            <i class="bi bi-house"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2 active" href="{{ url_for('profile') }}">
+            <i class="bi bi-person"></i> Edit Profile
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="#">
+            <i class="bi bi-bar-chart"></i> Analytics
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="#">
+            <i class="bi bi-file-earmark-text"></i> AI Cover Letter
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="#">
+            <i class="bi bi-card-checklist"></i> Resume Score
+          </a>
+        </li> 
+      </ul>
+      
+    </div>
+
+    <!-- MAIN PROFILE CONTENT -->
+    <div class="col-md-9 col-lg-10">
+      <div class="p-4">
+        <h3 class="mb-4">Profile Overview</h3>
+        
+        <div class="row g-4">
+          <!-- Example “cards” or “sections” for the user’s info -->
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Daily Limit</h5>
+                <p class="card-text">No plan</p>
+                <small class="text-muted">0% used, 0 jobs applied today</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Your Plan Details</h5>
+                <p class="card-text">No Plan</p>
+                <small class="text-muted">You can purchase a plan.</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Total Jobs Applied</h5>
+                <p class="card-text">No plan</p>
+                <small class="text-muted">No plan, please purchase a plan.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- More sections as needed... -->
+         
+
+        <hr class="my-5">
+
+        <h4>Tanitjob</h4>
+        <p>
+          Access information on over 53.1 million companies. Request referrals directly 
+          from employees of these companies using our AI to write and send emails
+          effortlessly.
+        </p>
+        <!-- <button class="btn btn-primary">Ask For Referral</button> -->
+        <a href="{{ url_for('job_application') }}" class="btn btn-primary">Start Applying</a>
+
+
+        <hr class="my-5">
+
+        <h4>Keejob</h4>
+        <p>
+          Access information on over 53.1 million companies. Request referrals directly 
+          from employees of these companies using our AI to write and send emails
+          effortlessly.
+        </p>
+        <!-- <button class="btn btn-primary">Ask For Referral</button> -->
+        <a href="#" class="btn btn-primary disabled">Start Applying</a>
+
+
+        <hr class="my-5">
+
+        <h4>LinkedIn</h4>
+        <p>
+          <strong>740 million members</strong> with over 55 million registered companies.
+          The largest social network of professional networking and career development.
+          Make sure you have a complete profile, including a resume, before starting to apply.
+        </p>
+        <a href="#" class="btn btn-primary disabled">Start Applying</a>
+
+        <hr class="my-5">
+
+        <h4>Indeed</h4>
+        <p>
+          Over 16 million postings and 8.2 jobs posted every second. 
+          Make sure you have a complete profile along with a resume uploaded 
+          before start applying.
+        </p>
+        <a href="#" class="btn btn-primary disabled">Start Applying</a>
+        
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

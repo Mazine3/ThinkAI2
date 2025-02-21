@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | ThinkAI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4 text-center">Welcome, {{ username }} !</h2>
+  <p class="text-center mb-5">Choose a feature below :</p>
+  
+  <div class="row g-4">
+    <!-- Card 1: Postule Automatique -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark h-100">
+        <img 
+          src="{{ url_for('static', filename='images/auto.png') }}" 
+          class="card-img-top" 
+          alt="Postule Automatique" 
+        >
+        <div class="card-body">
+          <h5 class="card-title">Automatic Apply</h5>
+          <p class="card-text">
+            Launch an automatic application on TanitJob 
+            to save time and increase your chances.
+          </p>
+        </div>
+        <div class="card-footer">
+          <a href="{{ url_for('profile') }}" class="btn btn-primary w-100">
+            Start
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Card 2: Optimiser CV -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark h-100">
+        <img 
+          src="{{ url_for('static', filename='images/cv_maker.png') }}" 
+          class="card-img-top" 
+          alt="Optimiser CV" 
+        >
+        <div class="card-body">
+          <h5 class="card-title">Optimize your CV</h5>
+          <p class="card-text">
+            Improve your CV with our advice 
+            and AI-powered analysis tools.
+          </p>
+        </div>
+        <div class="card-footer">
+          <a href="{{ url_for('resume_page') }}" class="btn btn-primary w-100">
+            Start
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Card 3: Préparation à l'entretien -->
+    <div class="col-md-4">
+      <div class="card text-white bg-dark h-100">
+        <img 
+          src="{{ url_for('static', filename='images/entretien.jpg') }}" 
+          class="card-img-top" 
+          alt="Préparation Entretien" 
+        >
+        <div class="card-body">
+          <h5 class="card-title">Interview Preparation</h5>
+          <p class="card-text">
+            Get advice and practice mock interviews 
+            to succeed in your future professional appointments.
+          </p>
+        </div>
+        <div class="card-footer">
+          <a href="#" class="btn btn-primary w-100 disabled">
+            Coming Soon
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+<!-- {{ url_for('resume_page') }} -->
