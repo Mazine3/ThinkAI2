@@ -277,5 +277,3 @@ def logout():
 # -----------------------------------
 # Run the App
 # -----------------------------------
-if __name__ == "__main__":
-    app.run(debug=DEBUG, port=PORT)
