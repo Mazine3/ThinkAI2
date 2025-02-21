@@ -191,22 +191,23 @@ def signup():
     """
     Handle new user registrations. If successful, prompt to login.
     """
-    if request.method == "POST":
-        username = request.form["username"].strip()
-        password = request.form["password"].strip()
-        confirm_password = request.form["confirm_password"].strip()
+    flash("To sign up, contact the administrator on LinkedIn (Mhamed BOUGUERRA).", "danger")
+    # if request.method == "POST":
+    #     username = request.form["username"].strip()
+    #     password = request.form["password"].strip()
+    #     confirm_password = request.form["confirm_password"].strip()
 
-        users = load_users()
+    #     users = load_users()
 
-        if username in users:
-            flash("Username already exists!", "danger")
-        elif password != confirm_password:
-            flash("Passwords do not match!", "danger")
-        else:
-            users[username] = {"password": password}
-            save_users(users)
-            flash("User registered successfully! You can now log in.", "success")
-            return redirect(url_for("login"))
+    #     if username in users:
+    #         flash("Username already exists!", "danger")
+    #     elif password != confirm_password:
+    #         flash("Passwords do not match!", "danger")
+    #     else:
+    #         users[username] = {"password": password}
+    #         save_users(users)
+    #         flash("User registered successfully! You can now log in.", "success")
+    #         return redirect(url_for("login"))
 
     return render_template("signup.html")
     
