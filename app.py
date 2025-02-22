@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import json
 import os
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
 from functools import wraps
 from fpdf import FPDF
 import base64
@@ -11,12 +10,7 @@ from create_main import main
 from utils.logging import logger
 
 
-load_dotenv()
-
-PORT = os.getenv('PORT','')
-DEBUG = os.getenv('DEBUG', '')
 SECRET_KEY = "my_secrt_key"
-# os.getenv('secret_key', 'mysecretkey')  # Provide default if not found
 
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
