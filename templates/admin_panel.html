@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel | ThinkAI{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+  <div class="row">
+    <!-- LEFT SIDEBAR -->
+    <div class="col-md-3 col-lg-2 bg-white shadow-sm" style="min-height: 80vh;">
+
+      <!-- Optionally display admin’s avatar/info -->
+      <div class="text-center py-4 border-bottom">
+        <div 
+          class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle bg-secondary text-white" 
+          style="width: 80px; height: 80px; font-size: 1.5rem;"
+        >
+          {{ user.initials }}
+        </div>
+        <h5 class="mb-0">{{ user.full_name }}</h5>
+        <small class="text-muted">{{ user.email }}</small>
+      </div>
+
+      <!-- Sidebar Menu (same as before, but highlight “Admin Panel”) -->
+      <ul class="nav flex-column mt-3">
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="{{ url_for('home') }}">
+            <i class="bi bi-house"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="{{ url_for('profile') }}">
+            <i class="bi bi-person"></i> Edit Profile
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="#">
+            <i class="bi bi-bar-chart"></i> Analytics
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="#">
+            <i class="bi bi-file-earmark-text"></i> AI Cover Letter
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark py-2" href="#">
+            <i class="bi bi-card-checklist"></i> Resume Score
+          </a>
+        </li>
+        <!-- Admin Panel link (active) -->
+        <li class="nav-item">
+          <a class="nav-link text-danger py-2 active" href="{{ url_for('admin_panel') }}">
+            <i class="bi bi-shield-lock"></i> Admin Panel
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- MAIN ADMIN CONTENT -->
+    <div class="col-md-9 col-lg-10">
+      <div class="p-4">
+        <h2>Admin Panel</h2>
+        <p>You are logged in as Administrator. Manage user accounts below.</p>
+
+        <!-- 1) Display all users in a table -->
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Credits</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for uname, uinfo in all_users.items() %}
+                <tr>
+                  <td>{{ uname }}</td>
+                  <td>{{ uinfo.get('full_name', '') }}</td>
+                  <td>{{ uinfo.get('email', '') }}</td>
+                  <td>{{ uinfo.get('credits', 0) }}</td>
+                  <td>
+                    <!-- Delete user form -->
+                    <form action="{{ url_for('delete_user') }}" method="post" class="d-inline">
+                      <input type="hidden" name="username" value="{{ uname }}">
+                      <button type="submit" class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete user {{ uname }}?');">
+                        Delete
+                      </button>
+                    </form>
+                    
+                    <!-- Or you could have an edit form or link to an edit route here -->
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2) Form: Add new user -->
+        <hr>
+        <h5>Add New User</h5>
+        <form action="{{ url_for('add_user') }}" method="post" class="row g-3 align-items-end">
+          <div class="col-auto">
+            <label for="new_username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="new_username" name="new_username" required>
+          </div>
+          <div class="col-auto">
+            <label for="new_password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="new_password" name="new_password" required>
+          </div>
+          <div class="col-auto">
+            <label for="new_full_name" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="new_full_name" name="new_full_name" required>
+          </div>
+          <div class="col-auto">
+            <label for="new_email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="new_email" name="new_email" required>
+          </div>
+          <div class="col-auto">
+            <label for="new_credits" class="form-label">Credits</label>
+            <input type="number" class="form-control" id="new_credits" name="new_credits" value="0" required>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-success mt-3">Add User</button>
+          </div>
+        </form>
+
+        <!-- 3) Form: Add credits to existing user -->
+        <hr>
+        <h5>Add Credits to Existing User</h5>
+        <form action="{{ url_for('add_credits') }}" method="post" class="row g-3 align-items-end">
+          <div class="col-auto">
+            <label for="selected_user" class="form-label">Select User</label>
+            <select class="form-select" id="selected_user" name="selected_user" required>
+              <option value="" disabled selected>-- Choose --</option>
+              {% for uname, uinfo in all_users.items() %}
+                <option value="{{ uname }}">{{ uname }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <label for="credits_to_add" class="form-label">Credits to Add</label>
+            <input type="number" class="form-control" id="credits_to_add" name="credits_to_add" value="10" required>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-info mt-3">Add Credits</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

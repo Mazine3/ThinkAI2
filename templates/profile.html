@@ -46,9 +46,17 @@
           <a class="nav-link text-dark py-2" href="#">
             <i class="bi bi-card-checklist"></i> Resume Score
           </a>
-        </li> 
+        </li>
+
+        <!-- Show the "Admin Panel" link if user is admin -->
+        {% if user.is_admin %}
+        <li class="nav-item">
+          <a class="nav-link text-danger py-2" href="{{ url_for('admin_panel') }}">
+            <i class="bi bi-shield-lock"></i> Admin Panel
+          </a>
+        </li>
+        {% endif %}
       </ul>
-      
     </div>
 
     <!-- MAIN PROFILE CONTENT -->
@@ -57,7 +65,7 @@
         <h3 class="mb-4">Profile Overview</h3>
         
         <div class="row g-4">
-          <!-- Example “cards” or “sections” for the user’s info -->
+          <!-- Daily Limit Card -->
           <div class="col-lg-4">
             <div class="card border-0 shadow-sm">
               <div class="card-body">
@@ -67,17 +75,8 @@
               </div>
             </div>
           </div>
-          
-          <div class="col-lg-4">
-            <div class="card border-0 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">Your Plan Details</h5>
-                <p class="card-text">No Plan</p>
-                <small class="text-muted">You can purchase a plan.</small>
-              </div>
-            </div>
-          </div>
-
+        
+          <!-- Total Jobs Applied Card -->
           <div class="col-lg-4">
             <div class="card border-0 shadow-sm">
               <div class="card-body">
@@ -87,10 +86,18 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- More sections as needed... -->
-         
+          <!-- Total Credits Card -->
+          <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">Total Credits</h5>
+                <p class="card-text">{{ user.credits }}</p>
+                <small class="text-muted">This is how many credits you have remaining.</small>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <hr class="my-5">
 
@@ -100,9 +107,7 @@
           from employees of these companies using our AI to write and send emails
           effortlessly.
         </p>
-        <!-- <button class="btn btn-primary">Ask For Referral</button> -->
         <a href="{{ url_for('job_application') }}" class="btn btn-primary">Start Applying</a>
-
 
         <hr class="my-5">
 
@@ -112,9 +117,7 @@
           from employees of these companies using our AI to write and send emails
           effortlessly.
         </p>
-        <!-- <button class="btn btn-primary">Ask For Referral</button> -->
         <a href="#" class="btn btn-primary disabled">Start Applying</a>
-
 
         <hr class="my-5">
 
@@ -135,7 +138,7 @@
           before start applying.
         </p>
         <a href="#" class="btn btn-primary disabled">Start Applying</a>
-        
+
       </div>
     </div>
   </div>
