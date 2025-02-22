@@ -8,6 +8,7 @@ from fpdf import FPDF
 import base64
 from create_motivation_lettre_2 import get_llm_response
 from create_main import main
+from utils.logging import logger
 
 
 load_dotenv()
@@ -79,6 +80,7 @@ def login():
 
         if username in users and users[username]["password"] == password:
             session["username"] = username
+            logger.info(f"User {username} connected successfully")
             return redirect(url_for("features"))
         else:
             flash("Invalid username or password!", "danger")
@@ -119,11 +121,9 @@ def motivation_letter():
         
         # User has enough credits => subtract 20
         user_data["credits"] = current_credits - 20
-        
         # Save back to users.json
         users[username] = user_data
         save_users(users)
-
 
         job_title = request.form.get("jobTitle", "").strip()
         your_name = request.form.get("yourName", "").strip()
@@ -137,13 +137,10 @@ def motivation_letter():
         jb_offre = request.form.get("offerDescription", "").strip()
 
         answer = get_llm_response(job_title, your_name, company_name, write_to, skills, role_type, job_location, today_date, jb_offre, langue=langue)
-        print(answer)
-        flash("Motivation letter generated successfully!", "success")
-
-         # 2) Generate the PDF from the text
         pdf_base64 = generate_pdf_base64(answer)
 
-              # Return both the text AND the PDF in JSON
+        flash("Motivation letter generated successfully!", "success")
+        logger.info("Motivation letter generated successfully!")
         return jsonify({"letter_text": answer, "pdf_data": pdf_base64})
     
     return render_template("motivation_letter.html", username=session["username"])
@@ -160,9 +157,8 @@ def update_motivation_letter():
     pdf_base64 = generate_pdf_base64(edited_text)
 
     # Return updated PDF
-    return jsonify({
-        "pdf_data": pdf_base64
-    })
+    logger.info("Motivation letter has ben updated successfully!")
+    return jsonify({"pdf_data": pdf_base64})
 
 
 
@@ -218,6 +214,7 @@ def signup():
         }
 
         save_users(users)
+        logger.info(f"User {username} registered successfully!")
         flash("User registered successfully! You can now log in.", "success")
         return redirect(url_for("login"))
     

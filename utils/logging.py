@@ -1,5 +1,4 @@
 import logging
-import os
 
 LOG_FILE_PATH = "log.log"
 
