@@ -121,8 +121,9 @@ def motivation_letter():
         job_location = request.form.get("jobLocation", "").strip()
         today_date = datetime.today().strftime('%d/%m/%Y')
         langue = request.form.get("langue_lettre", "").strip()
+        jb_offre = request.form.get("offerDescription", "").strip()
 
-        answer = get_llm_response(job_title, your_name, company_name, write_to, skills, role_type, job_location, today_date, langue=langue)
+        answer = get_llm_response(job_title, your_name, company_name, write_to, skills, role_type, job_location, today_date, jb_offre, langue=langue)
         print(answer)
         flash("Motivation letter generated successfully!", "success")
 
@@ -131,21 +132,6 @@ def motivation_letter():
 
               # Return both the text AND the PDF in JSON
         return jsonify({"letter_text": answer, "pdf_data": pdf_base64})
-
-        # # --- Generate PDF ---
-        # pdf = FPDF()
-        # pdf.add_page()
-        # pdf.set_font("Arial", size=11.5)
-
-        # pdf.multi_cell(0, 8, answer.lstrip())
-        # pdf_data = pdf.output(dest='S')
-
-        # pdf_buffer = BytesIO(pdf_data.encode('latin-1'))
-        # pdf_buffer.seek(0)
-
-        # Encode PDF as Base64
-        # pdf_base64 = base64.b64encode(pdf_buffer.getvalue()).decode('utf-8')
-        # return jsonify({"pdf_data": pdf_base64})
     
     return render_template("motivation_letter.html", username=session["username"])
 
@@ -176,7 +162,9 @@ def generate_pdf_base64(letter_text: str) -> str:
     pdf.add_page()
     pdf.set_font("Arial", size=11.5)
 
-    pdf.multi_cell(0, 8, letter_text.lstrip())
+
+    safe_text = letter_text.encode('latin-1', errors='ignore').decode('latin-1')
+    pdf.multi_cell(0, 8, safe_text)
     
     # 'S' returns a string. We need to convert it to bytes before b64 encoding.
     pdf_str = pdf.output(dest='S')  # returns string in Python 3
@@ -191,23 +179,25 @@ def signup():
     """
     Handle new user registrations. If successful, prompt to login.
     """
-    flash("To sign up, contact the administrator on LinkedIn (Mhamed BOUGUERRA).", "danger")
-    # if request.method == "POST":
-    #     username = request.form["username"].strip()
-    #     password = request.form["password"].strip()
-    #     confirm_password = request.form["confirm_password"].strip()
+    # flash("To sign up, contact the administrator on LinkedIn (Mhamed BOUGUERRA).", "danger")
 
-    #     users = load_users()
+    if request.method == "POST":
 
-    #     if username in users:
-    #         flash("Username already exists!", "danger")
-    #     elif password != confirm_password:
-    #         flash("Passwords do not match!", "danger")
-    #     else:
-    #         users[username] = {"password": password}
-    #         save_users(users)
-    #         flash("User registered successfully! You can now log in.", "success")
-    #         return redirect(url_for("login"))
+        username = request.form["username"].strip()
+        password = request.form["password"].strip()
+        confirm_password = request.form["confirm_password"].strip()
+
+        users = load_users()
+
+        if username in users:
+            flash("Username already exists!", "danger")
+        elif password != confirm_password:
+            flash("Passwords do not match!", "danger")
+        else:
+            users[username] = {"password": password}
+            save_users(users)
+            flash("User registered successfully! You can now log in.", "success")
+            return redirect(url_for("login"))
 
     return render_template("signup.html")
     
@@ -274,7 +264,3 @@ def logout():
     session.pop("username", None)
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
-
-# -----------------------------------
-# Run the App
-# -----------------------------------
