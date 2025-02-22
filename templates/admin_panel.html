@@ -7,19 +7,25 @@
     <!-- LEFT SIDEBAR -->
     <div class="col-md-3 col-lg-2 bg-white shadow-sm" style="min-height: 80vh;">
 
-      <!-- Optionally display admin’s avatar/info -->
-      <div class="text-center py-4 border-bottom">
-        <div 
-          class="mx-auto mb-2 d-flex align-items-center justify-content-center rounded-circle bg-secondary text-white" 
-          style="width: 80px; height: 80px; font-size: 1.5rem;"
-        >
+      <!-- Admin Profile Card (Styled) -->
+      <div class="text-center bg-white shadow-sm rounded-4 mx-3 p-4 d-flex flex-column align-items-center"
+           style="border-radius: 20px; padding-top: 50px; width: 90%; margin: auto;">
+        
+        <!-- Circle Avatar -->
+        <div class="d-flex align-items-center justify-content-center rounded-circle text-white shadow-sm"
+             style="width: 100px; height: 100px; background-color: #008b8b; font-size: 2rem; font-weight: bold;">
           {{ user.initials }}
         </div>
-        <h5 class="mb-0">{{ user.full_name }}</h5>
-        <small class="text-muted">{{ user.email }}</small>
+
+        <!-- Welcome Message -->
+        <h6 class="text-muted mt-3">Welcome Back</h6>
+
+        <!-- Full Name (Bold, Uppercase) -->
+        <h4 class="fw-bold text-dark text-center">{{ user.full_name.upper() }}</h4>
+
       </div>
 
-      <!-- Sidebar Menu (same as before, but highlight “Admin Panel”) -->
+      <!-- Sidebar Menu -->
       <ul class="nav flex-column mt-3">
         <li class="nav-item">
           <a class="nav-link text-dark py-2" href="{{ url_for('home') }}">
@@ -31,22 +37,6 @@
             <i class="bi bi-person"></i> Edit Profile
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark py-2" href="#">
-            <i class="bi bi-bar-chart"></i> Analytics
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark py-2" href="#">
-            <i class="bi bi-file-earmark-text"></i> AI Cover Letter
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark py-2" href="#">
-            <i class="bi bi-card-checklist"></i> Resume Score
-          </a>
-        </li>
-        <!-- Admin Panel link (active) -->
         <li class="nav-item">
           <a class="nav-link text-danger py-2 active" href="{{ url_for('admin_panel') }}">
             <i class="bi bi-shield-lock"></i> Admin Panel
@@ -79,9 +69,16 @@
                   <td>{{ uname }}</td>
                   <td>{{ uinfo.get('full_name', '') }}</td>
                   <td>{{ uinfo.get('email', '') }}</td>
-                  <td>{{ uinfo.get('credits', 0) }}</td>
+                  <td><strong>{{ uinfo.get('credits', 0) }}</strong></td>
                   <td>
-                    <!-- Delete user form -->
+                    <!-- Modify Credits Form -->
+                    <form action="{{ url_for('modify_credits') }}" method="post" class="d-inline">
+                      <input type="hidden" name="username" value="{{ uname }}">
+                      <input type="number" class="form-control d-inline w-50" name="credit_change" placeholder="± Credits" required>
+                      <button type="submit" class="btn btn-warning btn-sm">Modify</button>
+                    </form>
+
+                    <!-- Delete User Form -->
                     <form action="{{ url_for('delete_user') }}" method="post" class="d-inline">
                       <input type="hidden" name="username" value="{{ uname }}">
                       <button type="submit" class="btn btn-danger btn-sm"
@@ -89,8 +86,6 @@
                         Delete
                       </button>
                     </form>
-                    
-                    <!-- Or you could have an edit form or link to an edit route here -->
                   </td>
                 </tr>
               {% endfor %}
@@ -119,33 +114,7 @@
             <input type="email" class="form-control" id="new_email" name="new_email" required>
           </div>
           <div class="col-auto">
-            <label for="new_credits" class="form-label">Credits</label>
-            <input type="number" class="form-control" id="new_credits" name="new_credits" value="0" required>
-          </div>
-          <div class="col-auto">
             <button type="submit" class="btn btn-success mt-3">Add User</button>
-          </div>
-        </form>
-
-        <!-- 3) Form: Add credits to existing user -->
-        <hr>
-        <h5>Add Credits to Existing User</h5>
-        <form action="{{ url_for('add_credits') }}" method="post" class="row g-3 align-items-end">
-          <div class="col-auto">
-            <label for="selected_user" class="form-label">Select User</label>
-            <select class="form-select" id="selected_user" name="selected_user" required>
-              <option value="" disabled selected>-- Choose --</option>
-              {% for uname, uinfo in all_users.items() %}
-                <option value="{{ uname }}">{{ uname }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="col-auto">
-            <label for="credits_to_add" class="form-label">Credits to Add</label>
-            <input type="number" class="form-control" id="credits_to_add" name="credits_to_add" value="10" required>
-          </div>
-          <div class="col-auto">
-            <button type="submit" class="btn btn-info mt-3">Add Credits</button>
           </div>
         </form>
       </div>
