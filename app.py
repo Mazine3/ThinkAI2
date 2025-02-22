@@ -107,11 +107,54 @@ def resume_page():
     return render_template("resume_page.html", username=session["username"])
 
 
+@app.route("/add_credits", methods=["POST"])
+@login_required
+def add_credits():
+    # Make sure only admin can call this route
+    if session["username"] != "mhamed":
+        flash("Not authorized!", "danger")
+        return redirect(url_for("profile"))
+
+    users = load_users()
+    selected_user = request.form.get("selected_user")
+    credits_to_add = int(request.form.get("credits_to_add", "0"))
+
+    if selected_user in users:
+        users[selected_user]["credits"] = users[selected_user].get("credits", 0) + credits_to_add
+        save_users(users)
+        flash(f"Successfully added {credits_to_add} credits to {selected_user}.", "success")
+    else:
+        flash("User not found!", "danger")
+
+    return redirect(url_for("profile"))
+
+
 @app.route("/motivation_letter", methods=["GET", "POST"])
 @login_required
 def motivation_letter():
+    users = load_users()
+    
+    # Get the logged-in user from session
+    username = session["username"]
+    user_data = users.get(username, {})
+
 
     if request.method == "POST":
+
+        # Check if user has enough credits
+        current_credits = user_data.get("credits", 0)
+        if current_credits < 20:
+            # Not enough credits => return error JSON
+            return jsonify({"error": "You do not have enough credits to generate a letter."}), 400
+        
+        # User has enough credits => subtract 20
+        user_data["credits"] = current_credits - 20
+        
+        # Save back to users.json
+        users[username] = user_data
+        save_users(users)
+
+
         job_title = request.form.get("jobTitle", "").strip()
         your_name = request.form.get("yourName", "").strip()
         company_name = request.form.get("applyingCompany", "").strip()
@@ -205,13 +248,121 @@ def signup():
 @app.route("/profile")
 @login_required
 def profile():
-    # Example user data (in reality, fetch from DB or session)
+    users = load_users()  # load the entire users.json
+    username = session["username"]  # current logged-in user
+    user_data = users.get(username, {})
+
+    # Check if the user is the administrator (mhamed)
+    is_admin = (username == "mhamed")
+
+    # Prepare data for the current user
+    name_parts = user_data.get("full_name", "Unknown User").split()
+    initials = "".join(part[0] for part in name_parts).upper() if name_parts else "NA"
+    
     user_info = {
-        "initials": "MB",
-        "full_name": "Mhamed BOUGUERRA",
-        "email": "mhamedbouguerra@gmail.com"
+        "username": username,
+        "initials": initials,
+        "full_name": user_data.get("full_name", "Unknown User"),
+        "email": user_data.get("email", "no-email@example.com"),
+        "credits": user_data.get("credits", 0),
+        "is_admin": is_admin
     }
-    return render_template("profile.html", user=user_info)
+
+    # If admin, pass all users; otherwise, pass None
+    all_users = users if is_admin else None
+
+    return render_template("profile.html", user=user_info, all_users=all_users)
+
+
+@app.route("/add_user", methods=["GET", "POST"])
+@login_required
+def add_user():
+    # Only admin can access:
+    if session["username"] != "mhamed":
+        flash("Not authorized!", "danger")
+        return redirect(url_for("profile"))
+    
+    if request.method == "POST":
+        # Load users
+        users = load_users()
+        
+        new_username = request.form.get("new_username", "").strip()
+        new_password = request.form.get("new_password", "").strip()
+        new_full_name = request.form.get("new_full_name", "").strip()
+        new_email = request.form.get("new_email", "").strip()
+        new_credits = request.form.get("new_credits", "0").strip()
+        
+        if not new_username or not new_password:
+            flash("Username and password cannot be empty!", "danger")
+            return redirect(url_for("profile"))
+
+        if new_username in users:
+            flash("User already exists!", "danger")
+            return redirect(url_for("profile"))
+        
+        # Insert the new user
+        users[new_username] = {
+            "password": new_password,
+            "full_name": new_full_name,
+            "email": new_email,
+            "credits": int(new_credits)
+        }
+        
+        save_users(users)
+        flash(f"New user '{new_username}' added successfully!", "success")
+        return redirect(url_for("profile"))
+    
+    # If it's a GET request, you might want to show some form or redirect:
+    return redirect(url_for("profile"))
+
+
+@app.route("/admin_panel")
+@login_required
+def admin_panel():
+    # Only admin can view
+    if session["username"] != "mhamed":
+        flash("You are not authorized to view this page.", "danger")
+        return redirect(url_for("profile"))
+    
+    users = load_users()  # dict from JSON
+    user_data = users.get("mhamed", {})  # or load the current session user
+    name_parts = user_data.get("full_name", "Admin").split()
+    initials = "".join(part[0] for part in name_parts).upper() if name_parts else "A"
+    
+    # For the admin user object
+    admin_info = {
+        "initials": initials,
+        "full_name": user_data.get("full_name", "Administrator"),
+        "email": user_data.get("email", ""),
+        "is_admin": True,
+        "credits": user_data.get("credits", 0)  # might not matter for admin
+    }
+    
+    return render_template("admin_panel.html", user=admin_info, all_users=users)
+
+
+@app.route("/delete_user", methods=["POST"])
+@login_required
+def delete_user():
+    # Ensure only the admin can access this route
+    if session["username"] != "mhamed":
+        flash("Not authorized!", "danger")
+        return redirect(url_for("profile"))
+
+    # Load users
+    users = load_users()
+
+    # Get the username to delete from the form
+    username_to_delete = request.form.get("username")
+
+    if username_to_delete in users:
+        del users[username_to_delete]
+        save_users(users)
+        flash(f"User {username_to_delete} deleted successfully!", "success")
+    else:
+        flash("User not found!", "danger")
+
+    return redirect(url_for("profile"))
 
 
 @app.route("/job_application", methods=["GET", "POST"])
