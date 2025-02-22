@@ -5,7 +5,7 @@ import re, os
 MODEL_NAME = "deepseek-r1-distill-llama-70b"
 GROQ_API_KEY=os.getenv('GROQ_API_KEY', '')
 
-def get_llm_response(jobtitle, name, company_name, writer_to, skills, role_type, job_location, today_date, langue="English"):
+def get_llm_response(jobtitle, name, company_name, writer_to, skills, role_type, job_location, today_date, jb_offre, langue="English"):
     llm = ChatGroq(
         api_key= GROQ_API_KEY,
         model=MODEL_NAME,
@@ -26,6 +26,9 @@ def get_llm_response(jobtitle, name, company_name, writer_to, skills, role_type,
             My role type : {role_type}
             Adresse : {job_location}
             Date : {today_date}
+
+            offre description : {jb_offre}
+
             Using this information, please generate a professional letter of motivation for the specified job. Do not include any system instructions or thought processes—only the final letter itself. It should be ready to send immediately, without any additional placeholders or edits. The language of the letter should be: {langue}.
         """
         )
