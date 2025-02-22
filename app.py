@@ -1,21 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from create_main import main  # Your function to handle the job application logic
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import json
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from functools import wraps
-from create_motivation_lettre_2 import get_llm_response
-
-from flask import render_template, request, session, flash, send_file
-from io import BytesIO
 from fpdf import FPDF
-from datetime import datetime
-from io import BytesIO
-from flask import send_file
-
 import base64
-from flask import jsonify
+from create_motivation_lettre_2 import get_llm_response
+from create_main import main
 
 
 load_dotenv()
@@ -105,28 +97,6 @@ def features():
 def resume_page():
     # The new page after successful login
     return render_template("resume_page.html", username=session["username"])
-
-
-@app.route("/add_credits", methods=["POST"])
-@login_required
-def add_credits():
-    # Make sure only admin can call this route
-    if session["username"] != "mhamed":
-        flash("Not authorized!", "danger")
-        return redirect(url_for("profile"))
-
-    users = load_users()
-    selected_user = request.form.get("selected_user")
-    credits_to_add = int(request.form.get("credits_to_add", "0"))
-
-    if selected_user in users:
-        users[selected_user]["credits"] = users[selected_user].get("credits", 0) + credits_to_add
-        save_users(users)
-        flash(f"Successfully added {credits_to_add} credits to {selected_user}.", "success")
-    else:
-        flash("User not found!", "danger")
-
-    return redirect(url_for("profile"))
 
 
 @app.route("/motivation_letter", methods=["GET", "POST"])
@@ -219,31 +189,62 @@ def generate_pdf_base64(letter_text: str) -> str:
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-    """
-    Handle new user registrations. If successful, prompt to login.
-    """
-    # flash("To sign up, contact the administrator on LinkedIn (Mhamed BOUGUERRA).", "danger")
-
     if request.method == "POST":
-
         username = request.form["username"].strip()
         password = request.form["password"].strip()
         confirm_password = request.form["confirm_password"].strip()
+        full_name = request.form["full_name"].strip()
+        email = request.form["email"].strip()
 
         users = load_users()
 
+        # Check if username already exists
         if username in users:
             flash("Username already exists!", "danger")
-        elif password != confirm_password:
-            flash("Passwords do not match!", "danger")
-        else:
-            users[username] = {"password": password}
-            save_users(users)
-            flash("User registered successfully! You can now log in.", "success")
-            return redirect(url_for("login"))
+            return redirect(url_for("signup"))
 
-    return render_template("signup.html")
+        # Check password match
+        if password != confirm_password:
+            flash("Passwords do not match!", "danger")
+            return redirect(url_for("signup"))
+
+        # Everything is OK, create new user
+        users[username] = {
+            "password": password,
+            "full_name": full_name,
+            "email": email,
+            # Automatically assign 10 credits to every new user
+            "credits": 10
+        }
+
+        save_users(users)
+        flash("User registered successfully! You can now log in.", "success")
+        return redirect(url_for("login"))
     
+    # If GET request, just render signup form
+    return render_template("signup.html")
+
+
+@app.route("/modify_credits", methods=["POST"])
+@login_required
+def modify_credits():
+    if session["username"] != "mhamed":
+        flash("Not authorized!", "danger")
+        return redirect(url_for("admin_panel"))
+
+    users = load_users()
+    username = request.form.get("username")
+    credit_change = int(request.form.get("credit_change", "0"))
+
+    if username in users:
+        users[username]["credits"] = max(0, users[username].get("credits", 0) + credit_change)
+        save_users(users)
+        flash(f"Updated credits for {username}: {users[username]['credits']} credits.", "success")
+    else:
+        flash("User not found!", "danger")
+
+    return redirect(url_for("admin_panel"))
+
 
 @app.route("/profile")
 @login_required
