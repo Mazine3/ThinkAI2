@@ -1,8 +1,14 @@
 {
     "mhamed": {
-        "password": "123"
+        "password": "123",
+        "full_name": "Mhamed BOUGUERRA",
+        "email": "mhamedbouguerra@gmail.com",
+        "credits": 90
     },
-    "khawla" : {
-        "password": "123"
+    "khawla": {
+        "password": "123",
+        "full_name": "Khawla Dhahri",
+        "email": "khawla@ozeol.com",
+        "credits": 20
     }
 }
