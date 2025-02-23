@@ -87,7 +87,6 @@ def features():
     # The new page after successful login
     return render_template("features.html", username=session["username"])
 
-
 @app.route("/resume_page")
 @login_required
 def resume_page():
@@ -153,7 +152,6 @@ def update_motivation_letter():
     # Return updated PDF
     logger.info("Motivation letter has ben updated successfully!")
     return jsonify({"pdf_data": pdf_base64})
-
 
 
 def generate_pdf_base64(letter_text: str) -> str:
@@ -361,9 +359,27 @@ def delete_user():
 @login_required
 def job_application():
     """Job application form."""
+
+    users = load_users()
+    
+    # Get the logged-in user from session
     username = session["username"]
+    user_data = users.get(username, {})
 
     if request.method == "POST":
+
+        # Check if user has enough credits
+        current_credits = user_data.get("credits", 0)
+        if current_credits < 40:
+            # Not enough credits => return error JSON
+            return jsonify({"error": "You do not have enough credits to use automatic apply."}), 400
+        
+        # User has enough credits => subtract 20
+        user_data["credits"] = current_credits - 40
+        # Save back to users.json
+        users[username] = user_data
+        save_users(users)
+
         tj_username = request.form.get("tj_username", "").strip()
         tj_password = request.form.get("tj_password", "").strip()
         language = request.form.get("language", "").strip()

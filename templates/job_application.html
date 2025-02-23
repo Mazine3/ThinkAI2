@@ -1,118 +1,107 @@
 {% extends "base.html" %}
 {% block title %}Job Application | ThinkAI{% endblock %}
-{% block content %}
-<!-- <h2 class="mb-4">Welcome, {{ username }}</h2> -->
-<div class="row justify-content-center">
-  <div class="col-md-8 col-lg-6">
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title text-center mb-4">Job Application Form</h3>
-        <form method="POST" enctype="multipart/form-data">
-          <div class="mb-3">
-            <label for="tj_username" class="form-label">TanitJob Username</label>
-            <input
-              type="text"
-              name="tj_username"
-              id="tj_username"
-              class="form-control"
-              placeholder="Enter your TanitJob username"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="tj_password" class="form-label">TanitJob Password</label>
-            <input
-              type="password"
-              name="tj_password"
-              id="tj_password"
-              class="form-control"
-              placeholder="Enter your TanitJob password"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="full_name" class="form-label">Job search title</label>
-            <input
-              type="text"
-              name="poste_recherche"
-              id="poste_recherche"
-              class="form-control"
-              placeholder="e.g. Data scientist"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="pdf_file" class="form-label">Upload CV (PDF only)</label>
-            <input
-              type="file"
-              name="pdf_file"
-              id="pdf_file"
-              class="form-control"
-              accept=".pdf"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="language" class="form-label">Select Language</label>
-            <select
-              name="language"
-              id="language"
-              class="form-select"
-            >
-              <option value="French">French</option>
-              <option value="English">English</option>
-              <option value="Arabic">Arabic</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="full_name" class="form-label">Full Name</label>
-            <input
-              type="text"
-              name="full_name"
-              id="full_name"
-              class="form-control"
-              placeholder="e.g. John Doe"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input
-              type="text"
-              name="phone"
-              id="phone"
-              class="form-control"
-              placeholder="e.g. +216 99 999 999"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              class="form-control"
-              placeholder="e.g. youremail@example.com"
-              required
-            />
-          </div>
-          <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input
-              type="text"
-              name="location"
-              id="location"
-              class="form-control"
-              placeholder="e.g. Sousse, Tunisie"
-              required
-            />
-          </div>
 
-          <button type="submit" class="btn btn-success w-100">Submit Application</button>
-        </form>
+{% block content %}
+<div class="container py-4">
+  
+  <!-- Error Alert (Hidden by default) -->
+  <div id="errorAlert" class="alert alert-danger d-none" role="alert"></div>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-body">
+          <h3 class="card-title text-center mb-4">Job Application Form</h3>
+          <form id="jobApplicationForm" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="tj_username" class="form-label">TanitJob Username</label>
+              <input type="text" name="tj_username" id="tj_username" class="form-control" placeholder="Enter your TanitJob username" required />
+            </div>
+            <div class="mb-3">
+              <label for="tj_password" class="form-label">TanitJob Password</label>
+              <input type="password" name="tj_password" id="tj_password" class="form-control" placeholder="Enter your TanitJob password" required />
+            </div>
+            <div class="mb-3">
+              <label for="poste_recherche" class="form-label">Job search title</label>
+              <input type="text" name="poste_recherche" id="poste_recherche" class="form-control" placeholder="e.g. Data scientist" required />
+            </div>
+            <div class="mb-3">
+              <label for="pdf_file" class="form-label">Upload CV (PDF only)</label>
+              <input type="file" name="pdf_file" id="pdf_file" class="form-control" accept=".pdf" required />
+            </div>
+            <div class="mb-3">
+              <label for="language" class="form-label">Select Language</label>
+              <select name="language" id="language" class="form-select">
+                <option value="French">French</option>
+                <option value="English">English</option>
+                <option value="Arabic">Arabic</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="full_name" class="form-label">Full Name</label>
+              <input type="text" name="full_name" id="full_name" class="form-control" placeholder="e.g. John Doe" required />
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="text" name="phone" id="phone" class="form-control" placeholder="e.g. +216 99 999 999" required />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" name="email" id="email" class="form-control" placeholder="e.g. youremail@example.com" required />
+            </div>
+            <div class="mb-3">
+              <label for="location" class="form-label">Location</label>
+              <input type="text" name="location" id="location" class="form-control" placeholder="e.g. Sousse, Tunisie" required />
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Submit Application</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("jobApplicationForm");
+    const errorAlert = document.getElementById("errorAlert");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent the default form submission
+      const formData = new FormData(form);
+
+      // Hide previous errors
+      errorAlert.classList.add("d-none");
+      errorAlert.textContent = "";
+
+      fetch("{{ url_for('job_application') }}", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.error || "Unknown error");
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.error) {
+          errorAlert.textContent = data.error;
+          errorAlert.classList.remove("d-none");
+          return;
+        }
+        // Refresh the page on success
+        window.location.reload();
+      })
+      .catch(error => {
+        errorAlert.textContent = error.message;
+        errorAlert.classList.remove("d-none");
+      });
+    });
+  });
+</script>
+
 {% endblock %}
